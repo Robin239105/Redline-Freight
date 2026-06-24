@@ -9,3 +9,5 @@ dist-ssr
 .gemini/
 .vscode/
 .idea/
+vite.config.js
+vite.config.d.ts
