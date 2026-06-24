@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #f4f2ed;
+  color: #0b0b0a;
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Body grows tall so native vertical scroll maps to horizontal travel. */
+body {
+  overflow-x: hidden;
+}
+
+/* Mobile/Tablet first — normal vertical flow */
+.h-track {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+/* Each panel in vertical flow. Pad bottom to prevent content overlapping Highway. */
+.h-panel {
+  position: relative;
+  width: 100%;
+  min-height: fit-content;
+  padding-bottom: 7rem;
+}
+
+/* Desktop — luxury horizontal editorial track */
+@media (min-width: 1024px) {
+  .h-track {
+    flex-direction: row;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    width: auto;
+    will-change: transform;
+  }
+  .h-panel {
+    height: 100vh;
+    height: 100dvh;
+    flex: 0 0 100vw;
+    width: 100vw;
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+  .h-panel-120 {
+    flex: 0 0 120vw !important;
+    width: 120vw !important;
+  }
+  .h-panel-130 {
+    flex: 0 0 130vw !important;
+    width: 130vw !important;
+  }
+}
+
+/* Swiss focus ring — sharp, high-contrast. */
+:focus-visible {
+  outline: 2px solid #e4002b;
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #e4002b;
+  color: #fff;
+}
+
+/* Thin neutral scrollbar. */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f4f2ed;
+}
+::-webkit-scrollbar-thumb {
+  background: #c9c6bd;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Swiss editorial primitives
+   --------------------------------------------------------------------------- */
+
+/* Hairline rules — the structural backbone of the layout. */
+.rule-t {
+  border-top: 1px solid #1f1e1c;
+}
+.rule-b {
+  border-bottom: 1px solid #1f1e1c;
+}
+.rule-soft {
+  border-color: #dedbd3;
+}
+
+/* Tabular figures for stat counters and data. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Full-bleed image with a cinematic grayscale→color reveal on hover,
+   a film-grain vignette, and a slow Ken Burns drift. Real photography
+   makes these effects sing. */
+.editorial-img {
+  position: relative;
+  overflow: hidden;
+}
+.editorial-img img {
+  filter: grayscale(0.45) contrast(1.08) brightness(0.98);
+  transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.8s ease;
+}
+.editorial-img:hover img {
+  filter: grayscale(0) contrast(1) brightness(1);
+  transform: scale(1.06);
+}
+/* Cinematic vignette overlay for depth */
+.editorial-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(11, 11, 10, 0.12),
+    inset 0 0 120px 40px rgba(11, 11, 10, 0.15);
+  pointer-events: none;
+}
+
+/* Link with an underline that draws in on hover. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1.5px;
+  transition: background-size 0.35s ease;
+}
+.link-underline:hover {
+  background-size: 100% 1.5px;
+}
+
+/* Button: red wipe sweeps up from the bottom on hover. */
+.btn-sweep {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+.btn-sweep::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #e4002b;
+  transform: translateY(101%);
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: -1;
+}
+.btn-sweep:hover::before {
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------------------
+   Ken Burns zoom for background images — brings real photography to life.
+   --------------------------------------------------------------------------- */
+@keyframes kenBurns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.08) translate(-1%, -1%);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes kenBurns {
+    0%, 100% { transform: none; }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Vertically Short Viewports Override (MacBook Air / Laptop Screens)
+   Prevents text and layout from overflowing vertically in horizontal track
+   --------------------------------------------------------------------------- */
+@media (min-width: 1024px) and (max-height: 850px) {
+  /* Scale down display typography sizes to prevent text columns from taking too much height */
+  .text-display-xl {
+    font-size: clamp(3rem, 7.5vw, 6.25rem) !important;
+  }
+  .text-display-lg {
+    font-size: clamp(2.25rem, 5.5vw, 4.25rem) !important;
+  }
+  .text-display-md {
+    font-size: clamp(1.75rem, 4vw, 3rem) !important;
+  }
+  
+  /* Scale down body lead paragraphs slightly */
+  .text-lg {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Shrink vertical padding on panels to preserve viewport safe margins */
+  .pt-24 {
+    padding-top: 4.5rem !important; /* 72px instead of 96px */
+  }
+  .pb-28 {
+    padding-bottom: 5.5rem !important; /* 88px instead of 112px */
+  }
+  
+  /* Tighten spacing/margins */
+  .mb-7 {
+    margin-bottom: 1.25rem !important; /* 20px instead of 28px */
+  }
+  .mb-8 {
+    margin-bottom: 1.5rem !important;
+  }
+  .mb-10 {
+    margin-bottom: 1.5rem !important;
+  }
+  .mt-7 {
+    margin-top: 1.25rem !important;
+  }
+  .mt-8 {
+    margin-top: 1.25rem !important;
+  }
+  
+  /* Shrink padding inside data grids and spec lists */
+  .py-6 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  .py-3\.5 {
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+  }
+  .py-2\.5 {
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.45rem !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Premium Brand Mark Animations & Micro-interactions
+   --------------------------------------------------------------------------- */
+.brand-mark-box {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s ease,
+              background-color 0.4s ease;
+}
+.group:hover .brand-mark-box {
+  transform: scale(1.08);
+  border-color: #e4002b !important;
+}
+
+.brand-mark-line-container {
+  position: relative;
+  overflow: hidden;
+  height: 2px;
+  width: 14px;
+}
+.brand-mark-line-container::before,
+.brand-mark-line-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #e4002b;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.brand-mark-line-container::before {
+  left: 0;
+  transform: translateX(0);
+}
+.brand-mark-line-container::after {
+  left: -125%;
+  transform: translateX(0);
+}
+
+.group:hover .brand-mark-line-container::before {
+  transform: translateX(125%);
+}
+.group:hover .brand-mark-line-container::after {
+  transform: translateX(125%);
+}
+
